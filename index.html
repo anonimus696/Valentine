@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Для моєї коханої ❤️</title>
+    <style>
+        * { box-sizing: border-box; touch-action: manipulation; }
+        body {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; background-color: #ffeef2;
+            font-family: 'Segoe UI', sans-serif; overflow: hidden; text-align: center; padding: 20px;
+        }
+        .heart-particle { position: fixed; top: -10px; pointer-events: none; z-index: 0; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        #main-content { position: relative; z-index: 10; width: 100%; }
+        h1 { color: #d63384; font-size: clamp(1.5rem, 8vw, 2.5rem); margin-bottom: 30px; }
+        .buttons { display: flex; flex-direction: row; gap: 20px; align-items: center; justify-content: center; position: relative; }
+        button { padding: 15px 30px; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; transition: all 0.2s ease; font-weight: bold; outline: none; }
+        #yesBtn { background-color: #ff4d6d; color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); z-index: 20; }
+        #noBtn { background-color: #adb5bd; color: white; position: relative; z-index: 10; }
+        #heart-final { display: none; font-size: clamp(100px, 40vw, 200px); color: #ff4d6d; z-index: 30; animation: pulse 1.5s infinite, glow 2s infinite alternate; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes glow { from { filter: drop-shadow(0 0 10px #ff4d6d); } to { filter: drop-shadow(0 0 30px #ff758f); } }
+        .success-text { display: none; color: #d63384; font-size: clamp(1.2rem, 5vw, 2rem); margin-top: 20px; z-index: 30; }
+    </style>
+</head>
+<body>
+
+    <div id="main-content">
+        <h1 id="question">Ти будеш моєю Валентинкою? ❤️</h1>
+        <div class="buttons" id="btnContainer">
+            <button id="yesBtn">ТАК!</button>
+            <button id="noBtn">Ні</button>
+        </div>
+    </div>
+
+    <div id="heart-final">❤️</div>
+    <div id="successMessage" class="success-text">Я знав! Це буде найкращий вечір! 🥰</div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const mainContent = document.getElementById('main-content');
+        const heartFinal = document.getElementById('heart-final');
+        const successMessage = document.getElementById('successMessage');
+
+        let yesFontSize = 1.2;
+        let noAttempts = 0;
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            heart.style.opacity = Math.random();
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        setInterval(createHeart, 400);
+
+        function moveNoButton() {
+            noAttempts++;
+
+            if (noAttempts >= 7) {
+                // Ховаємо "Ні" за "Так"
+                noBtn.style.position = 'absolute';
+                noBtn.style.left = '50%';
+                noBtn.style.top = '50%';
+                noBtn.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                noBtn.style.zIndex = '5';
+                noBtn.style.opacity = '0.5';
+                return;
+            }
+
+            const padding = 50;
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding * 2) + padding;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding * 2) + padding;
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+
+            // Збільшуємо "Так"
+            yesFontSize += 0.5;
+            yesBtn.style.fontSize = yesFontSize + 'rem';
+            yesBtn.style.padding = (15 + yesFontSize * 4) + 'px ' + (30 + yesFontSize * 8) + 'px';
+        }
+
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        yesBtn.addEventListener('click', () => {
+            mainContent.style.display = 'none';
+            heartFinal.style.display = 'block';
+            successMessage.style.display = 'block';
+            setInterval(createHeart, 50);
+        });
+    </script>
+</body>
+</html>
